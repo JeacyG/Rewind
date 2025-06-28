@@ -12,9 +12,7 @@ public class BodyController : MonoBehaviour
         if (moveInput != Vector2.zero)
         {
             rb.linearVelocity = speed * moveInput;
-        
-            float angle = Mathf.Atan2(moveInput.y, moveInput.x) * Mathf.Rad2Deg - 90f;
-            transform.rotation = Quaternion.Euler(0, 0, angle);
+            transform.rotation = GameUtils.GetRotationFromDirection(moveInput);
         }
         else
         {

@@ -33,3 +33,6 @@ sysinfo.txt
 # Unity Cache
 MemoryCaptures/
 *.snap
+
+# User settings
+UserSettings/

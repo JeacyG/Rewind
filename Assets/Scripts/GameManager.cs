@@ -6,6 +6,14 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private CloneManager cloneManager;
     [SerializeField] private Transform spawnPoint;
+    [SerializeField] private EnemySpawner enemySpawner;
+
+    private void Awake()
+    {
+        RandomUtils.ResetSeed();
+        
+        enemySpawner.StartSpawning(spawnPoint);
+    }
 
     public void Rewind(List<ActionData> actions)
     {

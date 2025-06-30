@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,15 +9,17 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        RandomUtils.ResetSeed();
+        RandomUtils.ChangeSeed();
         
-        enemySpawner.StartSpawning(spawnPoint);
+        enemySpawner.Initialize(spawnPoint);
     }
 
     public void Rewind(List<ActionData> actions)
     {
+        RandomUtils.ResetSeed();
         cloneManager.CreateNewClone(actions, spawnPoint);
         cloneManager.ResetAllClones();
+        enemySpawner.ResetSpawner();
     }
 
     public Transform GetSpawnPoint()

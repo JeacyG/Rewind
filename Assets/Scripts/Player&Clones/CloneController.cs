@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CloneController : MonoBehaviour
 {
     [SerializeField] private BodyController bodyController;
+
+    private EnemySpawner enemySpawner;
     
     private List<ActionData> cloneActionData;
     private Transform spawnTransform;
@@ -12,6 +15,8 @@ public class CloneController : MonoBehaviour
 
     public void Initialize(List<ActionData> cloneData, Transform spawn)
     {
+        enemySpawner = FindFirstObjectByType<EnemySpawner>();
+        
         this.cloneActionData = new List<ActionData>(cloneData);
         this.spawnTransform = spawn;
     }
@@ -38,10 +43,27 @@ public class CloneController : MonoBehaviour
             currentFrame++;
             
             bodyController.ChangeVelocity(currentData.moveAction);
+
+            if (!currentData.hitData.IsUnityNull() && currentData.hitData.Length > 0)
+            {
+                HitAction(currentData.hitData);
+            }
         }
         else if (currentFrame == cloneActionData.Count)
         {
             ActivateClone(false);
+        }
+    }
+
+    private void HitAction(HitData[] hitData)
+    {
+        foreach (HitData data in hitData)
+        {
+            EnemyController enemyController = enemySpawner.GetEnemy(data.enemyID);
+            if (!enemyController.IsUnityNull())
+            {
+                enemyController.GetDamageable().TakeDamage(data.damage);
+            }
         }
     }
 }

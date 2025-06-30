@@ -151,7 +151,7 @@ MonoBehaviour:
   edgeSize: {x: 21.8, y: 14.1}
   edgeRadius: 0.82
   enemyPrefab: {fileID: 4423943663421411300, guid: 3b6718a5a8e897947957b9e170f678fa, type: 3}
-  spawnInterval: 4
+  spawnInterval: 30
   spawnDelta: 0.4
 --- !u!4 &168160524
 Transform:

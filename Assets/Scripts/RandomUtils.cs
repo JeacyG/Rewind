@@ -1,12 +1,16 @@
-using UnityEngine;
-
 public static class RandomUtils
 {
     private static System.Random rng = new System.Random();
+    private static int seed = -1;
+
+    public static void ChangeSeed()
+    {
+        seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+        ResetSeed();
+    }
 
     public static void ResetSeed()
     {
-        int seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
         rng = new System.Random(seed);
     }
     

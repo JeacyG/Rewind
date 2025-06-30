@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,27 +14,58 @@ public class EnemySpawner : MonoBehaviour
 
     private Transform target;
     private Coroutine spawnCoroutine;
+    
+    private List<EnemyController> enemies = new List<EnemyController>();
+    private int enemyIndex = 0;
 
     private void OnDestroy()
     {
         StopSpawning();
     }
 
-    public void StartSpawning(Transform target)
+    public void Initialize(Transform target)
     {
         this.target = target;
+        StartSpawning();
+    }
+    
+    public void ResetSpawner()
+    {
+        enemyIndex = 0;
+        StopSpawning();
+        StartSpawning();
+    }
+
+    private void StartSpawning()
+    {
         if (spawnCoroutine.IsUnityNull())
         {
             spawnCoroutine = StartCoroutine(SpawnCoroutine());
         }
     }
 
-    public void StopSpawning()
+    private void StopSpawning()
     {
         if (!spawnCoroutine.IsUnityNull())
         {
             StopCoroutine(spawnCoroutine);
+            spawnCoroutine = null;
         }
+        
+        KillAll();
+    }
+
+    private void KillAll()
+    {
+        foreach (EnemyController enemy in enemies)
+        {
+            if (!enemy.IsUnityNull())
+            {
+                Destroy(enemy.gameObject);
+            }
+        }
+        
+        enemies.Clear();
     }
 
     private IEnumerator SpawnCoroutine()
@@ -51,7 +83,14 @@ public class EnemySpawner : MonoBehaviour
     private void SpawnEnemy()
     {
         EnemyController controller = GameObject.Instantiate(enemyPrefab, GetRandomPositionInSpawnArea(), Quaternion.identity, transform).GetComponent<EnemyController>();
-        controller.Initialize(target);
+        controller.Initialize(target, enemyIndex);
+        enemies.Add(controller);
+        enemyIndex++;
+    }
+
+    public EnemyController GetEnemy(int index)
+    {
+        return enemies[index];
     }
 
     private Vector2 GetRandomPositionInSpawnArea()

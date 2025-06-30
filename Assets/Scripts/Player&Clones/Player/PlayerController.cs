@@ -1,5 +1,5 @@
+using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -23,8 +23,13 @@ public struct ActionData
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Movement Subsystem")]
     [SerializeField] private BodyController bodyController;
+    [Header("DamageZone Subsystem")]
     [SerializeField] private DamageZone damageZone;
+    [SerializeField] private float hitCooldown;
+    private bool bCanAttack = true;
+    private Coroutine hitCooldownCoroutine;
     
     private GameManager gameManager;
     
@@ -46,7 +51,17 @@ public class PlayerController : MonoBehaviour
         rewindAction.performed += RewindButton;
         hitAction.performed += HitButton;
 
+        damageZone.OnEnemiesHit += OnEnemiesHitReveived;
+
         ResetPlayer();
+    }
+
+    private void OnDestroy()
+    {
+        rewindAction.performed -= RewindButton;
+        hitAction.performed -= HitButton;
+        
+        damageZone.OnEnemiesHit -= OnEnemiesHitReveived;
     }
 
     private void FixedUpdate()
@@ -68,6 +83,19 @@ public class PlayerController : MonoBehaviour
         actions.Add(data);
     }
     
+    private void ResetPlayer()
+    {
+        transform.position = gameManager.GetSpawnPoint().position;
+        transform.rotation = gameManager.GetSpawnPoint().rotation;
+        
+        StopAllCoroutines();
+        hitCooldownCoroutine = null;
+        bCanAttack = true;
+        actions.Clear();
+        currentHitData.Clear();
+        damageZone.ResetDamageZone();
+    }
+    
     private void RewindButton(InputAction.CallbackContext context)
     {
         if (!context.performed)
@@ -79,26 +107,36 @@ public class PlayerController : MonoBehaviour
     
     private void HitButton(InputAction.CallbackContext context)
     {
-        if (!context.performed)
+        if (!context.performed || !bCanAttack)
             return;
 
+        StartAttackCooldown();
+
         int damage = 1;
-
-        damageZone.Damage(damage, out List<HitData> hitData);
-        
-        currentHitData = hitData;
+        damageZone.Damage(damage);
+    }
+    
+    private void OnEnemiesHitReveived(List<HitData> hitDatas)
+    {
+        currentHitData = hitDatas;
     }
 
-    private void ResetPlayer()
+    private void StartAttackCooldown()
     {
-        ResetActions();
-        transform.position = gameManager.GetSpawnPoint().position;
-        transform.rotation = gameManager.GetSpawnPoint().rotation;
-        damageZone.ResetDamageZone();
+        bCanAttack = false;
+
+        if (hitCooldownCoroutine != null)
+        {
+            StopCoroutine(hitCooldownCoroutine);
+        }
+
+        hitCooldownCoroutine = StartCoroutine(HitCooldownCoroutine());
     }
 
-    public void ResetActions()
+    private IEnumerator HitCooldownCoroutine()
     {
-        actions.Clear();
+        yield return new WaitForSeconds(hitCooldown);
+        bCanAttack = true;
+        hitCooldownCoroutine = null;
     }
 }

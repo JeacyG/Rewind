@@ -255,5 +255,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aed310146f7296c4692083b5f470bd14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 4423943663421411300}
+  baseObject: {fileID: 4423943663421411300}
   maxHealth: 2

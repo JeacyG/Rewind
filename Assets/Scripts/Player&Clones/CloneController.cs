@@ -21,7 +21,7 @@ public class CloneController : MonoBehaviour
         this.spawnTransform = spawn;
     }
 
-    public void ActivateClone(bool activate)
+    private void ActivateClone(bool activate)
     {
         currentFrame = activate ? 0 : -1;
         gameObject.SetActive(activate);
@@ -62,7 +62,7 @@ public class CloneController : MonoBehaviour
             EnemyController enemyController = enemySpawner.GetEnemy(data.enemyID);
             if (!enemyController.IsUnityNull())
             {
-                enemyController.GetDamageable().TakeDamage(data.damage);
+                enemyController.TakeDamage(data.damage);
             }
         }
     }

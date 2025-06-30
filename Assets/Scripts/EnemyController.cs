@@ -14,8 +14,15 @@ public class EnemyController : MonoBehaviour
     {
         this.target = target;
         this.ID = enemyIndex;
+
+        damageable.OnDeath += OnDeathReveived;
     }
-    
+
+    private void OnDestroy()
+    {
+        damageable.OnDeath -= OnDeathReveived;
+    }
+
     private void FixedUpdate()
     {
         if (!target.IsUnityNull())
@@ -31,10 +38,15 @@ public class EnemyController : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
         }
     }
-
-    public Damageable GetDamageable()
+    
+    private void OnDeathReveived()
     {
-        return damageable;
+        Destroy(this.gameObject);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        damageable.TakeDamage(damage);
     }
 
     public int GetID()

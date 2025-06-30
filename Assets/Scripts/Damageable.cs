@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class Damageable : MonoBehaviour, IDamageable
 {
-    [SerializeField] private GameObject enemy;
     [SerializeField] private int maxHealth = 10;
+    
+    public event Action OnDeath;
     
     private int health;
 
@@ -18,12 +19,7 @@ public class Damageable : MonoBehaviour, IDamageable
         health -= damage;
         if (health <= 0)
         {
-            Die();
+            OnDeath?.Invoke();
         }
-    }
-
-    private void Die()
-    {
-        Destroy(enemy);
     }
 }

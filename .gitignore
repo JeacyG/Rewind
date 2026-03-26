@@ -26,6 +26,8 @@ Thumbs.db
 .vscode/
 
 # VS2022
+*.csproj
+*.sln
 .vs/
 *.vcxproj*
 *.suo

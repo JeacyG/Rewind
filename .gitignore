@@ -8,8 +8,6 @@ Assets/AssetStoreTools*
 
 # Rider specific
 .idea/
-*.sln
-*.csproj
 *.user
 *.unityproj
 
@@ -26,6 +24,13 @@ Thumbs.db
 
 # VS Code
 .vscode/
+
+# VS2022
+.vs/
+*.vcxproj*
+*.suo
+*.tmp
+*.pdb
 
 # Crash reports
 sysinfo.txt

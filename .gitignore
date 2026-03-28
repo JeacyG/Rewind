@@ -33,6 +33,7 @@ Thumbs.db
 *.suo
 *.tmp
 *.pdb
+.vsconfig
 
 # Crash reports
 sysinfo.txt
@@ -40,6 +41,7 @@ sysinfo.txt
 # Unity Cache
 MemoryCaptures/
 *.snap
+UpgradeLog.htm
 
 # User settings
 UserSettings/

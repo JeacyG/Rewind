@@ -19,7 +19,7 @@ public class PlayerInputSource : MonoBehaviour
 
         moveAction = InputSystem.actions.FindAction("Move");
         aimAction = InputSystem.actions.FindAction("Aim");
-        shootAction = InputSystem.actions.FindAction("Shoot");
+        shootAction = InputSystem.actions.FindAction("Hit");
     }
 
     public PlayerInput GetInput()
@@ -30,8 +30,27 @@ public class PlayerInputSource : MonoBehaviour
     private void FixedUpdate()
     {
         Vector2 move = moveAction.ReadValue<Vector2>();
-        Vector2 aim = aimAction.ReadValue<Vector2>();
+        Vector2 aimRaw = aimAction.ReadValue<Vector2>();
         bool shoot = shootAction.ReadValue<bool>();
+        
+        Debug.Log(aimRaw);
+
+        Vector2 aim = transform.eulerAngles;
+        if (aimAction.activeControl is not null)
+        {
+            if (aimAction.activeControl.device is Mouse)
+            {
+                Vector3 mouseScreen = new Vector3(aimRaw.x, aimRaw.y, 0f);
+                Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
+
+                Vector3 dir = mouseWorld - transform.position;
+                aim = new Vector2(dir.x, dir.y).normalized;
+            }
+            else
+            {
+                aim = aimRaw.normalized;
+            }
+        }
 
         currentInput = new PlayerInput(move, aim, shoot);
 

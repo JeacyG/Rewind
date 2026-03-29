@@ -1,16 +1,31 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class RewindManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private InputAction rewindAction;
+    
+    private void Awake()
     {
-        
+        rewindAction = InputSystem.actions.FindAction("Rewind");
+        rewindAction.performed += OnRewind;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-        
+        rewindAction.performed -= OnRewind;
+    }
+
+    private void OnRewind(InputAction.CallbackContext context)
+    {
+        TriggerRewindAll();
+    }
+
+    public void TriggerRewindAll()
+    {
+        foreach (PlayerRecorder recorder in FindObjectsByType<PlayerRecorder>())
+        {
+            recorder.TriggerRewind();
+        }
     }
 }

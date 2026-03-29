@@ -5,7 +5,9 @@ using UnityEngine;
 public class PlayerRecorder : MonoBehaviour
 {
     [SerializeField] private PlayerInputSource inputSource;
+    [SerializeField] private GameObject clonePrefab;
 
+    private List<GhostPlayer> clones = new();
     private List<FrameSnapshot> frames = new();
 
     private void Awake()
@@ -24,10 +26,28 @@ public class PlayerRecorder : MonoBehaviour
         return new FrameSnapshot(transform.position, inputSource.GetInput());
     }
 
-    public List<FrameSnapshot> ConsumeFrames()
+    public void TriggerRewind()
     {
-        List<FrameSnapshot> copy = frames;
+        ResetSelf();
+        
+        foreach (GhostPlayer clone in clones)
+        {
+            clone.ResetClone();
+        }
+        
+        SpawnClone();
         frames = new List<FrameSnapshot>();
-        return copy;
+    }
+
+    private void ResetSelf()
+    {
+        transform.position = Vector2.zero;
+    }
+
+    private void SpawnClone()
+    {
+        GhostPlayer clone = Instantiate(clonePrefab).GetComponent<GhostPlayer>();
+        clone.Initialize(frames);
+        clones.Add(clone);
     }
 }

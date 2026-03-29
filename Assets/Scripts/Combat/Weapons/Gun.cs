@@ -25,6 +25,6 @@ public class Gun : WeaponBase
 
     private void Fire()
     {
-        Debug.Log("BAM!");
+        Instantiate(bulletPrefab, transform.position, transform.rotation);
     }
 }

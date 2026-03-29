@@ -31,9 +31,9 @@ public class PlayerInputSource : MonoBehaviour
     {
         Vector2 move = moveAction.ReadValue<Vector2>();
         Vector2 aimRaw = aimAction.ReadValue<Vector2>();
-        bool shoot = shootAction.ReadValue<bool>();
+        bool shoot = shootAction.IsPressed();
         
-        Debug.Log(aimRaw);
+        //Debug.Log(aimRaw);
 
         Vector2 aim = transform.eulerAngles;
         if (aimAction.activeControl is not null)

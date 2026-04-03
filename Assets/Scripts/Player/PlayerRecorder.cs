@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +15,16 @@ public class PlayerRecorder : MonoBehaviour
     {
         if (inputSource == null)
             inputSource = GetComponent<PlayerInputSource>();
+    }
+
+    private void OnEnable()
+    {
+        PlayerManager.Instance.RegisterPlayer(transform);
+    }
+
+    private void OnDisable()
+    {
+        PlayerManager.Instance.UnregisterPlayer(transform);
     }
 
     private void FixedUpdate()

@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 30711082}
   - component: {fileID: 30711081}
+  - component: {fileID: 30711083}
   m_Layer: 0
   m_Name: RewindManager
   m_TagString: Untagged
@@ -163,6 +164,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &30711083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30711080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3f823e6a4de92540bb8402d141cbf7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
 --- !u!1 &35678419
 GameObject:
   m_ObjectHideFlags: 0
@@ -316,7 +329,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 748b30f04d9019247aa01a085cd40005, type: 3}
---- !u!1 &1893714833
+--- !u!1 &1224286245
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -324,39 +337,40 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1893714835}
-  - component: {fileID: 1893714834}
+  - component: {fileID: 1224286247}
+  - component: {fileID: 1224286246}
   m_Layer: 0
-  m_Name: Spawner
+  m_Name: EnemySpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1893714834
+--- !u!114 &1224286246
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1893714833}
+  m_GameObject: {fileID: 1224286245}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0be6fd6baeab3b549941d4238b06e0cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  edgeSize: {x: 20, y: 12}
-  edgeRadius: 0.5
-  enemyPrefab: {fileID: 0}
-  spawnInterval: 4
+  edgeSize: {x: 20.14, y: 12.35}
+  edgeRadius: 0.69
+  enemyPrefab: {fileID: 3049021025030700157, guid: 745c71acae11baa409e88c6714113eeb, type: 3}
+  spawnInterval: 5
   spawnDelta: 1
---- !u!4 &1893714835
+  bAutoSpawn: 0
+--- !u!4 &1224286247
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1893714833}
+  m_GameObject: {fileID: 1224286245}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -371,5 +385,5 @@ SceneRoots:
   m_Roots:
   - {fileID: 30711082}
   - {fileID: 35678422}
-  - {fileID: 1893714835}
+  - {fileID: 1224286247}
   - {fileID: 322212638}

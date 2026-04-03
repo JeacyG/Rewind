@@ -11,42 +11,40 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private float spawnInterval;
     [SerializeField] private float spawnDelta;
-
-    private Transform target;
+    [SerializeField] private bool bAutoSpawn;
+    
     private Coroutine spawnCoroutine;
     
-    private List<EnemyController> enemies = new List<EnemyController>();
-    private int enemyIndex = 0;
+    private List<Enemy> enemies = new List<Enemy>();
 
     private void OnDestroy()
     {
         StopSpawning();
     }
 
-    public void Initialize(Transform target)
+    private void Start()
     {
-        this.target = target;
-        StartSpawning();
+        if (bAutoSpawn)
+            StartSpawning();
     }
-    
+
     public void ResetSpawner()
     {
-        enemyIndex = 0;
         StopSpawning();
         StartSpawning();
     }
 
     private void StartSpawning()
     {
-        if (spawnCoroutine.IsUnityNull())
+        if (spawnCoroutine == null)
         {
             spawnCoroutine = StartCoroutine(SpawnCoroutine());
         }
     }
 
-    private void StopSpawning()
+    public void StopSpawning()
     {
-        if (!spawnCoroutine.IsUnityNull())
+        if (spawnCoroutine != null)
         {
             StopCoroutine(spawnCoroutine);
             spawnCoroutine = null;
@@ -55,9 +53,9 @@ public class EnemySpawner : MonoBehaviour
         KillAll();
     }
 
-    private void KillAll()
+    public void KillAll()
     {
-        foreach (EnemyController enemy in enemies)
+        foreach (Enemy enemy in enemies)
         {
             if (!enemy.IsUnityNull())
             {
@@ -66,6 +64,11 @@ public class EnemySpawner : MonoBehaviour
         }
         
         enemies.Clear();
+    }
+
+    public void SpawnOne()
+    {
+        SpawnEnemy();
     }
 
     private IEnumerator SpawnCoroutine()
@@ -77,18 +80,21 @@ public class EnemySpawner : MonoBehaviour
             float waitTime = spawnInterval + RandomUtils.Range(-spawnDelta, spawnDelta);
             yield return new WaitForSeconds(waitTime);
         }
-        // ReSharper disable once IteratorNeverReturns
     }
 
     private void SpawnEnemy()
     {
-        EnemyController controller = GameObject.Instantiate(enemyPrefab, GetRandomPositionInSpawnArea(), Quaternion.identity, transform).GetComponent<EnemyController>();
-        controller.Initialize(target, enemyIndex);
-        enemies.Add(controller);
-        enemyIndex++;
+        Enemy enemy = EnemyFactory.CreateChasePlayerEnemy(
+            enemyPrefab,
+            GetRandomPositionInSpawnArea(),
+            Quaternion.identity,
+            transform
+        );
+        
+        enemies.Add(enemy);
     }
 
-    public EnemyController GetEnemy(int index)
+    public Enemy GetEnemy(int index)
     {
         return enemies[index];
     }

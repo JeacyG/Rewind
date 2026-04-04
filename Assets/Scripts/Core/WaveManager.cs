@@ -1,27 +1,33 @@
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class WaveManager : MonoBehaviour
 {
-    public static WaveManager Instance;
+    [SerializeField] private EnemySpawner spawner;
     
-    private uint globalSeed;
-    private int currentEnemyId = 0;
-
-    private void Awake()
+    private uint waveSeed;
+    
+    public void Init(WaveConfig waveConfig, uint waveSeed, int currentRewind)
     {
-        Instance = this;
-        ResetForNewWave((uint)Random.Range(1, 10000));
+        this.waveSeed = waveSeed;
     }
 
-    public uint GetNextId()
+    public void StartWave()
     {
-        return GameUtils.Hash(globalSeed, currentEnemyId++);
+        ResetWorldState();
+        
+        spawner.Init(waveSeed);
+        spawner.StartSpawning();
     }
 
-    public void ResetForNewWave(uint newSeed)
+    public void ResetWave()
     {
-        globalSeed = newSeed;
-        currentEnemyId = 0;
+        ResetWorldState();
+        
+        spawner.ResetSpawner();
+    }
+
+    private void ResetWorldState()
+    {
+        
     }
 }

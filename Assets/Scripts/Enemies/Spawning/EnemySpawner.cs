@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
+    [Header("Manager")]
+    [SerializeField] private RunManager runManager;
+    [Header("Spawner")]
     [SerializeField] private Vector2 edgeSize;
     [SerializeField] private float edgeRadius;
     [SerializeField] private GameObject enemyPrefab;
@@ -106,7 +109,7 @@ public class EnemySpawner : MonoBehaviour
             GetRandomPositionInSpawnArea(),
             Quaternion.identity,
             transform,
-            WaveManager.Instance.GetNextId()
+            runManager.GetNextEnemySeed()
         );
         
         enemies.Add(enemy);

@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -13,44 +11,74 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float spawnDelta;
     [SerializeField] private bool bAutoSpawn;
     
-    private Coroutine spawnCoroutine;
-    
-    private List<Enemy> enemies = new List<Enemy>();
+    private List<Enemy> enemies = new();
 
-    private void OnDestroy()
+    private bool isInitialized = false;
+    private bool isSpawning = false;
+    private float timer;
+
+    private uint seed;
+    private RandomContainer random;
+
+    private IRandom randomTiming;
+    private IRandom randomPosition;
+
+    public void Init(uint seed)
     {
-        StopSpawning();
+        this.seed = seed;
+        random = new RandomContainer();
+
+        randomTiming = random.GetStream("timing", seed);
+        randomPosition = random.GetStream("position", seed);
+
+        isInitialized = true;
     }
 
-    private void Start()
+    private void Update()
     {
-        if (bAutoSpawn)
-            StartSpawning();
+        if (!isSpawning)
+            return;
+        
+        timer -= Time.deltaTime;
+
+        if (timer <= 0f)
+        {
+            SpawnEnemy();
+            
+            float waitTime = spawnInterval + randomTiming.Range(-spawnDelta, spawnDelta);
+            timer += waitTime;
+        }
+    }
+
+    public void StartSpawning()
+    {
+        if (!isInitialized)
+        {
+            Debug.LogError("Spawner not initialized");
+            return;
+        }
+        
+        isSpawning = true;
+        
+        timer = spawnInterval + randomTiming.Range(-spawnDelta, spawnDelta);
+    }
+
+    public void StopSpawning()
+    {
+        isSpawning = false;
     }
 
     public void ResetSpawner()
     {
         StopSpawning();
-        StartSpawning();
-    }
-
-    private void StartSpawning()
-    {
-        if (spawnCoroutine == null)
-        {
-            spawnCoroutine = StartCoroutine(SpawnCoroutine());
-        }
-    }
-
-    public void StopSpawning()
-    {
-        if (spawnCoroutine != null)
-        {
-            StopCoroutine(spawnCoroutine);
-            spawnCoroutine = null;
-        }
-        
         KillAll();
+
+        random = new RandomContainer();
+        
+        randomTiming = random.GetStream("timing", seed);
+        randomPosition = random.GetStream("position", seed);
+        
+        StartSpawning();
     }
 
     public void KillAll()
@@ -71,32 +99,17 @@ public class EnemySpawner : MonoBehaviour
         SpawnEnemy();
     }
 
-    private IEnumerator SpawnCoroutine()
-    {
-        while (true)
-        {
-            SpawnEnemy();
-        
-            float waitTime = spawnInterval + RandomUtils.Range(-spawnDelta, spawnDelta);
-            yield return new WaitForSeconds(waitTime);
-        }
-    }
-
     private void SpawnEnemy()
     {
         Enemy enemy = EnemyFactory.CreateChasePlayerEnemy(
             enemyPrefab,
             GetRandomPositionInSpawnArea(),
             Quaternion.identity,
-            transform
+            transform,
+            WaveManager.Instance.GetNextId()
         );
         
         enemies.Add(enemy);
-    }
-
-    public Enemy GetEnemy(int index)
-    {
-        return enemies[index];
     }
 
     private Vector2 GetRandomPositionInSpawnArea()
@@ -105,26 +118,26 @@ public class EnemySpawner : MonoBehaviour
         float halfWidth = edgeSize.x / 2f;
         float halfHeight = edgeSize.y / 2f;
 
-        int side = RandomUtils.Range(0, 4);
+        int side = randomPosition.Range(0, 4);
 
         float x = 0f, y = 0f;
         switch (side)
         {
             case 0: // Top
-                x = RandomUtils.Range(center.x - halfWidth - edgeRadius, center.x + halfWidth + edgeRadius);
-                y = RandomUtils.Range(center.y + halfHeight - edgeRadius, center.y + halfHeight + edgeRadius);
+                x = randomPosition.Range(center.x - halfWidth - edgeRadius, center.x + halfWidth + edgeRadius);
+                y = randomPosition.Range(center.y + halfHeight - edgeRadius, center.y + halfHeight + edgeRadius);
                 break;
             case 1: // Bottom
-                x = RandomUtils.Range(center.x - halfWidth - edgeRadius, center.x + halfWidth + edgeRadius);
-                y = RandomUtils.Range(center.y - halfHeight - edgeRadius, center.y - halfHeight + edgeRadius);
+                x = randomPosition.Range(center.x - halfWidth - edgeRadius, center.x + halfWidth + edgeRadius);
+                y = randomPosition.Range(center.y - halfHeight - edgeRadius, center.y - halfHeight + edgeRadius);
                 break;
             case 2: // Left
-                x = RandomUtils.Range(center.x - halfWidth - edgeRadius, center.x - halfWidth + edgeRadius);
-                y = RandomUtils.Range(center.y - halfHeight + edgeRadius, center.y + halfHeight - edgeRadius);
+                x = randomPosition.Range(center.x - halfWidth - edgeRadius, center.x - halfWidth + edgeRadius);
+                y = randomPosition.Range(center.y - halfHeight + edgeRadius, center.y + halfHeight - edgeRadius);
                 break;
             case 3: // Right
-                x = RandomUtils.Range(center.x + halfWidth - edgeRadius, center.x + halfWidth + edgeRadius);
-                y = RandomUtils.Range(center.y - halfHeight + edgeRadius, center.y + halfHeight - edgeRadius);
+                x = randomPosition.Range(center.x + halfWidth - edgeRadius, center.x + halfWidth + edgeRadius);
+                y = randomPosition.Range(center.y - halfHeight + edgeRadius, center.y + halfHeight - edgeRadius);
                 break;
         }
         

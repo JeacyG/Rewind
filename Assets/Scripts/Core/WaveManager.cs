@@ -1,16 +1,27 @@
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class WaveManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public static WaveManager Instance;
+    
+    private uint globalSeed;
+    private int currentEnemyId = 0;
+
+    private void Awake()
     {
-        
+        Instance = this;
+        ResetForNewWave((uint)Random.Range(1, 10000));
     }
 
-    // Update is called once per frame
-    void Update()
+    public uint GetNextId()
     {
-        
+        return GameUtils.Hash(globalSeed, currentEnemyId++);
+    }
+
+    public void ResetForNewWave(uint newSeed)
+    {
+        globalSeed = newSeed;
+        currentEnemyId = 0;
     }
 }

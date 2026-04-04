@@ -13,7 +13,12 @@ public class ChaseMovement : IMovement
         this.speed = speed;
         this.stopDistance = stopDistance;
     }
-    
+
+    public void Init(IRandom rng)
+    {
+        
+    }
+
     public void Tick(Enemy enemy, float deltaTime)
     {
         Transform target = getTarget?.Invoke();

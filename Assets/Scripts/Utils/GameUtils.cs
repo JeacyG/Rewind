@@ -2,6 +2,10 @@ using UnityEngine;
 
 public static class GameUtils
 {
+    public const int SCENE_MAIN_MENU = 0;
+    public const int SCENE_OPTIONS = 1;
+    public const int SCENE_GAME = 2;
+    
     public const string TAG_PLAYER = "Player";
     public const string TAG_CLONE = "Clone";
     public const string TAG_ENEMY = "Enemy";
